@@ -172,7 +172,6 @@ def visualizar():
     st.title("📦 Exportação de Escolas")
     if st.button("📦 Exportar Todas as Escolas", use_container_width=True):
         df_geral = exportar_dados_geral()
-        
         st.download_button(
             "⬇️ Baixar CSV Geral",
             df_geral.to_csv(index=False).encode('utf-8'),
@@ -182,10 +181,13 @@ def visualizar():
 
     st.title("📋 Escolas Cadastradas")
     st.divider()
-    if 'escolas' not in st.session_state or not st.session_state['escolas']:
+
+    df_escolas = carregar_escolas()
+    if df_escolas.empty:
         st.info("Nenhuma escola cadastrada.")
         return
-    for idx, escola in enumerate(st.session_state['escolas']):
+
+    for idx, escola in df_escolas.iterrows():
         with st.expander(f"🏫 {escola['nome']} - {escola['endereco']}"):
             st.subheader(f"📄 Salas da escola {escola['nome']}")
             st.caption(f"Endereço: {escola['endereco']}")
