@@ -77,13 +77,18 @@ def salvar_backup_csv():
     st.toast("Backup salvo!")
 
 def carregar_escolas():
-    if 'escolas' not in st.session_state:
-        return pd.DataFrame(columns=['id', 'nome', 'endereco'])
-    return pd.DataFrame([{'id': idx, 'id_visivel': idx + 1, 'nome': esc['nome'], 'endereco': esc['endereco']} for idx, esc in enumerate(st.session_state['escolas'])])
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
 
-def carregar_salas_por_escola(escola_id):
-    if 'escolas' not in st.session_state or escola_id >= len(st.session_state['escolas']):
-        return pd.DataFrame(columns=['nome_sala', 'bloco', 'andar', 'candidatos_sala'])
+    usuario = st.session_state['usuario']
+    if usuario['nivel'] == 'admin':
+        cursor.execute("SELECT id, nome, endereco, usuario_id FROM escolas")
+    else:
+        cursor.execute("SELECT id, nome, endereco, usuario_id FROM escolas WHERE usuario_id = ?", (usuario['id'],))
+
+    dados = cursor.fetchall()
+    conn.close()
+    return pd.DataFrame(dados, columns=['id', 'nome', 'endereco', 'usuario_id']))
     return pd.DataFrame(st.session_state['escolas'][escola_id]['salas'])
 
 def exportar_dados_por_escola(escola_id):
@@ -117,7 +122,7 @@ def exportar_dados_geral():
     usuario_id = st.session_state['usuario']['id']
     nivel = st.session_state['usuario']['nivel']
 
-if nivel == 'admin':
+    if nivel == 'admin':
     df_escolas = carregar_escolas()
 else:
     df_escolas = carregar_escolas()
