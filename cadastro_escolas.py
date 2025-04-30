@@ -115,7 +115,7 @@ def exportar_dados_por_escola(escola_id):
 
 def exportar_dados_geral():
     usuario_id = st.session_state['usuario']['id']
-nivel = st.session_state['usuario']['nivel']
+    nivel = st.session_state['usuario']['nivel']
 
 if nivel == 'admin':
     df_escolas = carregar_escolas()
