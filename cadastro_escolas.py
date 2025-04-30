@@ -47,11 +47,6 @@ conn.execute("""
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
     )
 """)
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        endereco TEXT NOT NULL
-    )
-""")
 conn.execute("""
     CREATE TABLE IF NOT EXISTS salas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
